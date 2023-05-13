@@ -4,7 +4,7 @@ rtc:
   stun_servers:
     - stun.l.google.com:19302
 redis:
-  address: host.docker.internal:6379
+  address: cache_container:6379
   username: ""
   password: ""
   db: 0
@@ -27,5 +27,5 @@ signal_relay:
 webhook:
   api_key: APIiYAA5w37Cfo2
   urls:
-    - "http://plugnmeet-api:8080/webhook"
+    - "http://plugnmeet_container:8080/webhook"
     #- "http://host.docker.internal:8080/webhook"

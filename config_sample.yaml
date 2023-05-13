@@ -36,13 +36,13 @@ log_settings:
   # max age of log before rotate in days
   maxage: 2
 livekit_info:
-  host: "http://host.docker.internal:7880"
+  host: "http://livekit_container:7880"
   api_key: "APIiYAA5w37Cfo2"
   secret: "6aNur7qqupeZhFYNOJVUyeXxXhVw8f4lm13pEDUx8SgB"
   # value in minutes. Default 10 minutes. Client will renew token automatically
   token_validity: 10m
 redis_info:
-  host: host.docker.internal:6379
+  host: cache_container:6379
   username: ""
   password: ""
   db: 0
@@ -57,7 +57,7 @@ redis_info:
 #  sentinel_username: user
 #  sentinel_password: pass
 mysql_info:
-  host: host.docker.internal
+  host: db_container
   port: 3306
   username: "root"
   password: "12345"
@@ -90,5 +90,5 @@ shared_notepad:
   etherpad_hosts:
     -
       id: "node_01"
-      host: host.docker.internal:9001
+      host: etherpad_container:9001
       api_key: "eb2fb3fb78ca29eb6896852517d34a1be5f320664e3cce3a522a06dfa278f169"

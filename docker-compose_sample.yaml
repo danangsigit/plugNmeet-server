@@ -1,6 +1,7 @@
 version: "3"
 services:
   redis:
+    container_name: cache_container
     image: redis
     volumes:
       - redis-db:/data/redis
@@ -10,6 +11,7 @@ services:
       - application
     restart: unless-stopped
   db:
+    container_name: db_container
     image: mariadb
     volumes:
       - ./sql_dump/install.sql:/docker-entrypoint-initdb.d/install.sql
@@ -22,7 +24,10 @@ services:
       MYSQL_USER: ${MYSQL_USER:-danang}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
     restart: unless-stopped
+    networks:
+      - application
   livekit:
+    container_name: livekit_container
     image: livekit/livekit-server
     ports:
       - "7880:7880/tcp"
@@ -31,23 +36,22 @@ services:
     volumes:
       - ./livekit_sample.yaml:/app/livekit.yaml
     command: --config "/app/livekit.yaml" --dev
-    depends_on:
-      - redis
     networks:
       - application
+    restart: unless-stopped
   livekit-ingress:
+    container_name: ingress_container
     image: livekit/ingress
     ports:
       - "1935:1935"
     volumes:
       - ./ingress_sample.yaml:/app/ingress.yaml
     command: --config "/app/ingress.yaml"
-    depends_on:
-      - redis
-      - livekit
     networks:
       - application
+    restart: unless-stopped
   etherpad:
+    container_name: etherpad_container
     image: mynaparrot/plugnmeet-etherpad
     ports:
       - "9001:9001"
@@ -58,12 +62,12 @@ services:
 #      - /usr/share/fonts/:/usr/share/fonts/:ro
 #      - /etc/fonts/:/etc/fonts/:ro
 #      - /usr/share/fontconfig/:/usr/share/fontconfig/:ro
-#      - /var/cache/fontconfig/:/var/cache/fontconfig/:ro   
-    depends_on:
-      - redis
+#      - /var/cache/fontconfig/:/var/cache/fontconfig/:ro
     networks:
       - application
+    restart: unless-stopped
   plugnmeet-api:
+    container_name: plugnmeet_container
     build:
       context: .
       dockerfile: Dockerfile
@@ -78,12 +82,9 @@ services:
 #      - /etc/fonts/:/etc/fonts/:ro
 #      - /usr/share/fontconfig/:/usr/share/fontconfig/:ro
 #      - /var/cache/fontconfig/:/var/cache/fontconfig/:ro
-    depends_on:
-      - redis
-      - db
-      - livekit
     networks:
       - application
+    restart: unless-stopped
 
 volumes:
   mysql-data:

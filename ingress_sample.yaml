@@ -1,10 +1,10 @@
 api_key: APIiYAA5w37Cfo2
 api_secret: 6aNur7qqupeZhFYNOJVUyeXxXhVw8f4lm13pEDUx8SgB
-ws_url: http://host.docker.internal:7880
+ws_url: http://livekit_container:7880
 rtmp_port: 1935
 health_port: 8088
 redis:
-  address: host.docker.internal:6379
+  address: cache_container:6379
   username: ""
   password: ""
   db: 0
