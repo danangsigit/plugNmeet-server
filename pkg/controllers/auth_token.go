@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"encoding/hex"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/livekit/protocol/auth"
 	"github.com/mynaparrot/plugnmeet-protocol/plugnmeet"
@@ -26,6 +27,8 @@ func HandleAuthHeaderCheck(c *fiber.Ctx) error {
 	signature := c.Get("HASH-SIGNATURE", "")
 	body := c.Body()
 
+	fmt.Println("apiKey :", apiKey)
+	fmt.Println("signature :", signature)
 	if apiKey != config.AppCnf.Client.ApiKey {
 		c.Status(fiber.StatusUnauthorized)
 		return utils.SendCommonProtoJsonResponse(c, false, "invalid API key")
@@ -43,6 +46,7 @@ func HandleAuthHeaderCheck(c *fiber.Ctx) error {
 		if subtle.ConstantTimeCompare([]byte(expectedSignature), []byte(signature)) == 1 {
 			status = true
 		}
+		fmt.Println("expectedSignature :", expectedSignature)
 	}
 
 	if !status {
