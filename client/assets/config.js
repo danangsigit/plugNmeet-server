@@ -1,4 +1,4 @@
-window.PLUG_N_MEET_SERVER_URL = 'http://plugnmeet.kelaspintar.dev:8080';
+window.PLUG_N_MEET_SERVER_URL = 'https://plugnmeet.kelaspintar.dev';
 
 // this is helpful for external plugin development where images or other files located
 // in other place.

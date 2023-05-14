@@ -36,7 +36,7 @@ log_settings:
   # max age of log before rotate in days
   maxage: 2
 livekit_info:
-  host: "http://plugnmeet.kelaspintar.dev:7880"
+  host: "https://plugnmeet-rtc.kelaspintar.dev"
   api_key: "APIiYAA5w37Cfo2"
   secret: "6aNur7qqupeZhFYNOJVUyeXxXhVw8f4lm13pEDUx8SgB"
   # value in minutes. Default 10 minutes. Client will renew token automatically
