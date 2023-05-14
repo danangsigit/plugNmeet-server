@@ -4,7 +4,7 @@ ws_url: http://host.docker.internal:7880
 rtmp_port: 1935
 health_port: 8088
 redis:
-  address: localhost:6379
+  address: host.docker.internal:6379
   username: ""
   password: ""
   db: 0

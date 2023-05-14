@@ -1,0 +1,95 @@
+version: "3"
+services:
+  redis:
+    container_name: cache_container
+    image: redis
+    volumes:
+      - redis-db:/data/redis
+    ports:
+      - "6379:6379"
+    networks:
+      - application
+    restart: unless-stopped
+  db:
+    container_name: db_container
+    image: mariadb
+    volumes:
+      - ./sql_dump/install.sql:/docker-entrypoint-initdb.d/install.sql
+      - mysql-data:/data/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-12345}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-plugnmeet}
+      MYSQL_USER: ${MYSQL_USER:-danang}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
+    restart: unless-stopped
+    networks:
+      - application
+  livekit:
+    container_name: livekit_container
+    image: livekit/livekit-server
+    ports:
+      - "7880:7880/tcp"
+      - "7881:7881/tcp"
+      - "7882:7882/udp"
+    volumes:
+      - ./livekit_dev.yaml:/app/livekit.yaml
+    command: --config "/app/livekit.yaml" --dev --node-ip plugnmeet.kelaspintar.dev
+    networks:
+      - application
+    restart: unless-stopped
+  livekit-ingress:
+    container_name: ingress_container
+    image: livekit/ingress
+    ports:
+      - "1935:1935"
+    volumes:
+      - ./ingress_dev.yaml:/app/ingress.yaml
+    command: --config "/app/ingress.yaml"
+    networks:
+      - application
+    restart: unless-stopped
+  etherpad:
+    container_name: etherpad_container
+    image: mynaparrot/plugnmeet-etherpad
+    ports:
+      - "9001:9001"
+    volumes:
+      - ./etc/etherpad/APIKEY.txt:/opt/etherpad-lite/APIKEY.txt
+      - ./etc/etherpad/settings.json:/opt/etherpad-lite/settings.json
+      # mount fonts as read only mood
+#      - /usr/share/fonts/:/usr/share/fonts/:ro
+#      - /etc/fonts/:/etc/fonts/:ro
+#      - /usr/share/fontconfig/:/usr/share/fontconfig/:ro
+#      - /var/cache/fontconfig/:/var/cache/fontconfig/:ro
+    networks:
+      - application
+    restart: unless-stopped
+  plugnmeet-api:
+    container_name: plugnmeet_container
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - ../client:/usr/app/client
+      - ../recording_files:/usr/app/recording_files
+      # mount fonts as read only mood
+#      - /usr/share/fonts/:/usr/share/fonts/:ro
+#      - /etc/fonts/:/etc/fonts/:ro
+#      - /usr/share/fontconfig/:/usr/share/fontconfig/:ro
+#      - /var/cache/fontconfig/:/var/cache/fontconfig/:ro
+    networks:
+      - application
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+  redis-db:
+
+networks:
+  application:
+    driver: bridge

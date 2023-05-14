@@ -34,8 +34,8 @@ services:
       - "7881:7881/tcp"
       - "7882:7882/udp"
     volumes:
-      - ./livekit_sample.yaml:/app/livekit.yaml
-    command: --config "/app/livekit.yaml" --dev
+      - ./livekit_local.yaml:/app/livekit.yaml
+    command: --config "/app/livekit.yaml" --dev --node-ip 10.30.30.56
     networks:
       - application
     restart: unless-stopped
@@ -45,7 +45,7 @@ services:
     ports:
       - "1935:1935"
     volumes:
-      - ./ingress_sample.yaml:/app/ingress.yaml
+      - ./ingress_local.yaml:/app/ingress.yaml
     command: --config "/app/ingress.yaml"
     networks:
       - application

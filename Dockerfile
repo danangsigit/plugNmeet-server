@@ -31,9 +31,9 @@ USER app
 WORKDIR /usr/app
 
 COPY --from=builder /go/src/app/plugnmeet-server /usr/app/plugnmeet-server
-COPY --from=builder /go/src/app/config_sample.yaml /usr/app/config.yaml
-COPY --from=builder /go/src/app/ingress_sample.yaml /usr/app/ingress.yaml
-COPY --from=builder /go/src/app/livekit_sample.yaml /usr/app/livekit.yaml
+COPY --from=builder /go/src/app/config_local.yaml /usr/app/config.yaml
+COPY --from=builder /go/src/app/ingress_local.yaml /usr/app/ingress.yaml
+COPY --from=builder /go/src/app/livekit_local.yaml /usr/app/livekit.yaml
 
 # Run the binary.
 CMD ["./plugnmeet-server"]

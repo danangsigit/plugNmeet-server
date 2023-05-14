@@ -1,21 +1,39 @@
-FROM golang:1.20-buster
+FROM golang:1.20-buster as builder
 
-WORKDIR /app
+ARG TARGETPLATFORM
+ARG TARGETARCH
+RUN echo building for "$TARGETPLATFORM"
+
+WORKDIR /go/src/app
+
+COPY go.mod go.mod
+COPY go.sum go.sum
+# download if above files changed
+RUN go mod download
+
+# Copy the go source
+COPY cmd/ cmd/
+COPY pkg/ pkg/
+COPY version/ version/
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=$TARGETARCH GO111MODULE=on go build -ldflags '-w -s -buildid=' -a -o plugnmeet-server ./cmd/server
+
+FROM debian:buster-slim
 
 RUN export DEBIAN_FRONTEND=noninteractive; \
     apt update && \
-    apt install --no-install-recommends -y build-essential libreoffice mupdf-tools && \
-    apt install --no-install-recommends -y fontconfig fonts-dejavu fonts-dejavu-extra \
-    fonts-noto fonts-noto-cjk fonts-liberation fonts-liberation2 fonts-linuxlibertine \
-    fonts-sil-gentium fonts-sil-gentium-basic && \
+    apt install --no-install-recommends -y wget libreoffice mupdf-tools && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
-    
-RUN go install github.com/cosmtrek/air@latest
+RUN groupadd app && useradd -g app app
+USER app
+WORKDIR /usr/app
 
-#COPY . .
-COPY go.mod go.mod
-COPY go.sum go.sum
-RUN go mod download
+COPY --from=builder /go/src/app/plugnmeet-server /usr/app/plugnmeet-server
+COPY --from=builder /go/src/app/config_dev.yaml /usr/app/config.yaml
+COPY --from=builder /go/src/app/ingress_dev.yaml /usr/app/ingress.yaml
+COPY --from=builder /go/src/app/livekit_dev.yaml /usr/app/livekit.yaml
 
-CMD air
+# Run the binary.
+CMD ["./plugnmeet-server"]
