@@ -43,8 +43,14 @@ func Router() *fiber.App {
 	}
 	app.Use(recover.New())
 	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
 		AllowMethods: "POST,GET,OPTIONS",
+		AllowHeaders: "API-KEY, HASH-SIGNATURE, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With",
 	}))
+
+	app.Options("*", func(c *fiber.Ctx) error {
+		return c.SendStatus(fiber.StatusNoContent)
+	})
 
 	app.Static("/assets", config.AppCnf.Client.Path+"/assets")
 	app.Static("/favicon.ico", config.AppCnf.Client.Path+"/assets/imgs/favicon.ico")
