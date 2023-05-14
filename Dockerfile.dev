@@ -30,10 +30,10 @@ RUN groupadd app && useradd -g app app
 USER app
 WORKDIR /usr/app
 
-COPY --from=builder /go/src/app/plugnmeet-server /usr/app/plugnmeet-server
 COPY --from=builder /go/src/app/config_dev.yaml /usr/app/config.yaml
-COPY --from=builder /go/src/app/ingress_dev.yaml /usr/app/ingress.yaml
-COPY --from=builder /go/src/app/livekit_dev.yaml /usr/app/livekit.yaml
+COPY --from=builder /go/src/app/client/ /usr/app/client/
+COPY --from=builder /go/src/app/recording_files/ /usr/app/recording_files/
+COPY --from=builder /go/src/app/plugnmeet-server /usr/app/plugnmeet-server
 
 # Run the binary.
 CMD ["./plugnmeet-server"]

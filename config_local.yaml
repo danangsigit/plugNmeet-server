@@ -42,7 +42,7 @@ livekit_info:
   # value in minutes. Default 10 minutes. Client will renew token automatically
   token_validity: 10m
 redis_info:
-  host: localhost:6379
+  host: host.docker.internal:6379
   username: ""
   password: ""
   db: 0
@@ -57,7 +57,7 @@ redis_info:
 #  sentinel_username: user
 #  sentinel_password: pass
 mysql_info:
-  host: localhost
+  host: host.docker.internal
   port: 3306
   username: "root"
   password: "12345"
@@ -90,5 +90,5 @@ shared_notepad:
   etherpad_hosts:
     -
       id: "node_01"
-      host: "http://localhost:9001"
+      host: "http://host.docker.internal:9001"
       api_key: "eb2fb3fb78ca29eb6896852517d34a1be5f320664e3cce3a522a06dfa278f169"
