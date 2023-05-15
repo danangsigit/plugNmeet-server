@@ -27,5 +27,5 @@ signal_relay:
 webhook:
   api_key: APIiYAA5w37Cfo2
   urls:
-    - "http://plugnmeet-api:8080/webhook"
+    - "http://host.docker.internal:8080/webhook"
     #- "http://host.docker.internal:8080/webhook"

@@ -32,6 +32,7 @@ WORKDIR /usr/app
 
 COPY --from=builder /go/src/app/config_local.yaml /usr/app/config.yaml
 COPY --from=builder /go/src/app/client/ /usr/app/client/
+COPY --from=builder /go/src/app/client/assets/config_local.js /usr/app/client/assets/config.js
 COPY --from=builder /go/src/app/plugnmeet-server /usr/app/plugnmeet-server
 
 # Run the binary.
